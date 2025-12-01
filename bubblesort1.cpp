@@ -1,46 +1,59 @@
-// 3)	Write a program using Bubble sort algorithm, assign the roll nos. to the students of your class as per their previous years result. i.e. topper will be roll no. 1 and analyse the sorting algorithm pass by pass.
-#include <iostream>
-#include <vector>
+#include<iostream>
+#include<string>
+#include<vector>
+#include<iomanip>
 using namespace std;
+struct students{
+    string name;
+    int marks;
+};
 int main()
 {
     int n;
-    cout << "Enter number of students :";
-    cin >> n;
-
-    string name[n];
-    int marks[n];
-
-    for (int i = 0; i < n; i++)
+    cout<<"Enter the number of students:";
+    cin>>n;
+    vector<students>v(n);
+    for(int i=0;i<n;i++)
     {
-        cout << "Enter name of student " << i + 1 << " : ";
-        cin >> name[i];
-        cout << "Enter marks of student " << i + 1 << " in percentage : ";
-        cin >> marks[i];
+        cout<<"Enter the name of the student "<<i+1<<endl;
+        cin>>v[i].name;
+        cout<<"Enter the marks of the student "<<i+1<<endl;
+        cin>>v[i].marks;
+
     }
-
-    for (int i = 0; i < n - 1; i++)
+    cout<<"The students and their marks are:"<<endl;
+    cout<<left<<setw(8)<<"Name"<<setw(8)<<"Marks"<<endl;
+    for(int j=0;j<n;j++)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        cout<<left<<setw(8)<<v[j].name<<setw(8)<<v[j].marks<<endl;
+    }
+    for(int i=n-2;i>=0;i--)
+    {
+        bool swapped=0;
+        for(int j=0;j<=i;j++)
         {
-            if (marks[j] < marks[j + 1])
+            if(v[j].marks<v[j+1].marks)
             {
-
-                int temp = marks[j];
-                marks[j] = marks[j + 1];
-                marks[j + 1] = temp;
-
-                string tempname = name[j];
-                name[j] = name[j + 1];
-                name[j + 1] = tempname;
+                swap(v[j],v[j+1]);
+                swapped=1;
             }
+            
         }
+        if(!swapped)
+            {
+                break;
+            }
+            cout<<"Pass "<<n-1-i<<endl;
+            cout<<left<<setw(8)<<"Roll"<<setw(8)<<"Name"<<setw(8)<<"Marks"<<endl;
+            for(int l=0;l<n;l++)
+    {
+        cout<<left<<setw(8)<<l+1<<setw(8)<<v[l].name<<setw(8)<<v[l].marks<<endl;
     }
 
-    cout << "Roll numbers (Topper = Roll No - 1)" << endl;
-    for (int i = 0; i < n; i++)
-    {
-        cout << "Roll No :" << i + 1 << ", Name :" << name[i] << ", Marks :" << marks[i] << endl;
     }
-    return 0;
+    cout<<left<<setw(8)<<"Roll"<<setw(8)<<"Name"<<setw(8)<<"Marks"<<endl;
+    for(int k=0;k<n;k++)
+    {
+        cout<<left<<setw(8)<<k+1<<setw(8)<<v[k].name<<setw(8)<<v[k].marks<<endl;
+    }
 }
