@@ -2,119 +2,185 @@
 #include <iostream>
 using namespace std;
 
-class Node
-{
-public:
+struct Node {
     int data;
-    Node *next;
-    Node *prev;
-
-    Node(int data)
-    {
-        this->data = data;
-        next = nullptr;
-        prev = nullptr;
-    }
+    Node* prev;
+    Node* next;
 };
-void traverse(Node *head)
-{
 
-    Node *temp = head;
-    cout << "NULL--";
-    while (temp)
-    {
-        cout << temp->data << "--";
-        temp = temp->next;
-    }
-    cout << " NULL " << endl;
+Node* createNode(int v) {
+    Node* p = new Node;
+    p->data = v;
+    p->prev = NULL;
+    p->next = NULL;
+    return p;
 }
-void insert_head(Node *&head, int val)
-{
-    Node *new_node = new Node(val);
-    if (head)
-    {
-        head->prev = new_node;
-        new_node->next = head;
-    }
-    head = new_node;
-}
-void Insert_at_k(Node *&head, int val, int k)
-{
-    if (k <= 0)
-    {
-        cout << "Position invalid " << endl;
+
+void insertAtBeginning(Node*& head, Node*& tail, int v) {
+    Node* n = createNode(v);
+    if (head == NULL) {
+        head = tail = n;
         return;
     }
-    if (k == 1)
-    {
-        insert_head(head, val);
+    n->next = head;
+    head->prev = n;
+    head = n;
+}
+
+void insertAtEnd(Node*& head, Node*& tail, int v) {
+    Node* n = createNode(v);
+    if (tail == NULL) {
+        head = tail = n;
         return;
     }
+    tail->next = n;
+    n->prev = tail;
+    tail = n;
+}
 
-    Node *new_node = new Node(val);
-    Node *temp = head;
-    int count = 1;
-    while (temp && count < (k - 1))
-    {
-        temp = temp->next;
-        count++;
-    }
-    if (temp == nullptr)
-    {
-        cout << "Position Out of range" << endl;
-        delete new_node;
+void insertAtPosition(Node*& head, Node*& tail, int pos, int v) {
+    if (pos <= 1) {
+        insertAtBeginning(head, tail, v);
         return;
     }
-    new_node->next = temp->next;
-    new_node->prev = temp;
-    temp->next = new_node;
-}
-void delete_head(Node *&head)
-{
-    Node *temp = head;
-    head = temp->next;
-    head->prev = nullptr;
-    free(temp);
-}
-void delete_node_at_k(Node *&head, int k)
-{
-    if (k == 1)
-    {
-        delete_head(head);
+    Node* cur = head;
+    int i = 1;
+    while (cur != NULL && i < pos) {
+        cur = cur->next;
+        i++;
+    }
+    if (cur == NULL) { // insert at end
+        insertAtEnd(head, tail, v);
         return;
     }
-    int count = 1;
-    Node *prev = head;
-    while (prev && count < (k - 1))
-    {
-        prev = prev->next;
-        count++;
-    }
-    Node *curr = prev->next;
-    Node *next = curr->next;
-    prev->next = next;
-    next->prev = prev;
-    free(curr);
+    Node* n = createNode(v);
+    Node* prev = cur->prev;
+    prev->next = n;
+    n->prev = prev;
+    n->next = cur;
+    cur->prev = n;
 }
-int main()
-{
 
-    Node *head = new Node(1);
-    Node *n2 = new Node(2);
-    Node *n3 = new Node(3);
+void deleteAtBeginning(Node*& head, Node*& tail) {
+    if (head == NULL) return;
+    Node* t = head;
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        head = head->next;
+        head->prev = NULL;
+    }
+    delete t;
+}
 
-    head->next = n2;
-    n2->next = n3;
-    n2->prev = head;
-    n3->prev = n2;
+void deleteAtEnd(Node*& head, Node*& tail) {
+    if (tail == NULL) return;
+    Node* t = tail;
+    if (head == tail) {
+        head = tail = NULL;
+    } else {
+        tail = tail->prev;
+        tail->next = NULL;
+    }
+    delete t;
+}
 
-    traverse(head);
+void deleteAtPosition(Node*& head, Node*& tail, int pos) {
+    if (head == NULL) return;
+    if (pos <= 1) {
+        deleteAtBeginning(head, tail);
+        return;
+    }
+    Node* cur = head;
+    int i = 1;
+    while (cur != NULL && i < pos) {
+        cur = cur->next;
+        i++;
+    }
+    if (cur == NULL) return;
+    if (cur == tail) {
+        deleteAtEnd(head, tail);
+        return;
+    }
+    Node* p = cur->prev;
+    Node* q = cur->next;
+    p->next = q;
+    q->prev = p;
+    delete cur;
+}
 
-    Insert_at_k(head, 4, 3);
-    traverse(head);
+void displayForward(Node* head) {
+    if (head == NULL) {
+        cout << "List is empty\n";
+        return;
+    }
+    Node* cur = head;
+    while (cur != NULL) {
+        cout << cur->data;
+        if (cur->next) cout << " <-> ";
+        cur = cur->next;
+    }
+    cout << "\n";
+}
 
-    delete_node_at_k(head, 1);
-    traverse(head);
+void displayBackward(Node* tail) {
+    if (tail == NULL) {
+        cout << "List is empty\n";
+        return;
+    }
+    Node* cur = tail;
+    while (cur != NULL) {
+        cout << cur->data;
+        if (cur->prev) cout << " <-> ";
+        cur = cur->prev;
+    }
+    cout << "\n";
+}
 
+void freeList(Node*& head) {
+    Node* cur = head;
+    while (cur != NULL) {
+        Node* t = cur;
+        cur = cur->next;
+        delete t;
+    }
+    head = NULL;
+}
+
+int main() {
+    Node* head = NULL;
+    Node* tail = NULL;
+    int ch;
+    while (1) {
+        cout << "\n1.Insert at beginning\n2.Insert at end\n3.Insert at position\n4.Delete at beginning\n5.Delete at end\n6.Delete at position\n7.Display forward\n8.Display backward\n9.Exit\nChoose: ";
+        if (!(cin >> ch)) break;
+        if (ch == 1) {
+            int v; cout << "Value: "; cin >> v;
+            insertAtBeginning(head, tail, v);
+        } else if (ch == 2) {
+            int v; cout << "Value: "; cin >> v;
+            insertAtEnd(head, tail, v);
+        } else if (ch == 3) {
+            int v, p; cout << "Value: "; cin >> v; cout << "Position: "; cin >> p;
+            insertAtPosition(head, tail, p, v);
+        } else if (ch == 4) {
+            deleteAtBeginning(head, tail);
+        } else if (ch == 5) {
+            deleteAtEnd(head, tail);
+        } else if (ch == 6) {
+            int p; cout << "Position: "; cin >> p;
+            deleteAtPosition(head, tail, p);
+        } else if (ch == 7) {
+            displayForward(head);
+        } else if (ch == 8) {
+            displayBackward(tail);
+        } else if (ch == 9) {
+            break;
+        } else {
+            cout << "Invalid choice\n";
+        }
+    }
+    freeList(head);
     return 0;
 }
+
