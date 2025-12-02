@@ -23,8 +23,17 @@ int main()
             array[i][j] = val;
         }
     }
+    cout<<"Original matrix:"<<endl;
+    for(int k=0;k<n;k++)
+    {
+        for(int l=0;l<m;l++)
+        {
+            cout<<array[k][l]<<" ";
+        }
+        cout<<endl;
+    }
     cout << endl;
-
+    
     int count = 0;
 
     for (int i = 0; i < n; i++)
@@ -61,4 +70,21 @@ int main()
         }
         cout << endl;
     }
-}
+    vector<vector<int>>temp(n,vector<int>(m));
+    for(int a=0;a<n;a++)
+    {
+        for(int b=0;b<m;b++)
+        {
+            temp[b][a]=array[a][b];
+        }
+    }
+    for(int c=0;c<m;c++)
+    {
+        for(int d=0;d<n;d++)
+        {
+            cout<<temp[c][d]<<" ";
+        }
+        cout<<endl;
+    }
+    }
+
