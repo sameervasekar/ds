@@ -37,22 +37,53 @@ bool verifyMagicSquare(const vector<vector<int>>& magic, int n) {
 
 // ------------ Construct Magic Square (Odd Order) -----------------
 vector<vector<int>> oddMagic(int n) {
-    vector<vector<int>> magic(n, vector<int>(n, 0));
 
-    int i = 0, j = n / 2;
+    // initialize magic square
+    vector<vector<int>> magic(n, vector<int>(n, 0)); 
 
-    for (int num = 1; num <= n * n; num++) {
-        magic[i][j] = num;
+    // Initialize position for 1
+    int i = n / 2;
+    int j = n - 1;
 
-        int newi = (i - 1 + n) % n;
-        int newj = (j + 1) % n;
+    // One by one put all values in magic square
+    for (int num = 1; num <= n * n;) {
 
-        if (magic[newi][newj] != 0) 
-            i = (i + 1) % n;
-        else {
-            i = newi;
-            j = newj;
+        // if row is -1 and column becomes n, 
+        // set row = 0, col = n -2
+        if (i == -1 && j == n)  {
+            j = n - 2;
+            i = 0;
         }
+        else {
+
+            // If next number goes to out of 
+            // square's right side
+            if (j == n)
+                j = 0;
+
+            // If next number goes to out of
+            // square's upper side
+            if (i < 0)
+                i = n - 1;
+        }
+
+        // If number is already present decrement 
+        // column by 2, and increment row by 1
+        if (magic[i][j]) {
+            j -= 2;
+            i++;
+            continue;
+        }
+        else {
+
+            // set number
+            magic[i][j] = num++; 
+        }
+
+        // increment and decrement
+        // column and row by 1 respectively
+        j++;
+        i--; 
     }
 
     return magic;
@@ -64,23 +95,50 @@ vector<vector<int>> doublyEvenMagic(int n) {
 
     int num = 1;
     int total = n * n;
-
-    // Fill the matrix
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            magic[i][j] = num++;
-
-    // Inverse certain positions
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-
-            if ((i % 4 == j % 4) || (i % 4 + j % 4 == 3))
-                magic[i][j] = total + 1 - magic[i][j];
-        }
-    }
+    int i,j;
+    // filling matrix with its count value 
+    // starting from 1; 
+    for ( i = 0; i < n; i++) 
+        for ( j = 0; j < n; j++) 
+            magic[i][j] = (n*i) + j + 1; 
+    
+    // change value of Array elements 
+    // at fix location as per rule 
+    // (n*n+1)-arr[i][j] 
+    // Top Left corner of Matrix 
+    // (order (n/4)*(n/4)) 
+    for ( i = 0; i < n/4; i++) 
+        for ( j = 0; j < n/4; j++) 
+            magic[i][j] = (n*n + 1) - magic[i][j]; 
+    
+    // Top Right corner of Matrix 
+    // (order (n/4)*(n/4)) 
+    for ( i = 0; i < n/4; i++) 
+        for ( j = 3 * (n/4); j < n; j++) 
+            magic[i][j] = (n*n + 1) - magic[i][j]; 
+    
+    // Bottom Left corner of Matrix 
+    // (order (n/4)*(n/4)) 
+    for ( i = 3 * n/4; i < n; i++) 
+        for ( j = 0; j < n/4; j++) 
+            magic[i][j] = (n*n+1) - magic[i][j]; 
+    
+    // Bottom Right corner of Matrix 
+    // (order (n/4)*(n/4)) 
+    for ( i = 3 * n/4; i < n; i++) 
+        for ( j = 3 * n/4; j < n; j++) 
+            magic[i][j] = (n*n + 1) - magic[i][j]; 
+    
+    // Centre of Matrix (order (n/2)*(n/2)) 
+    for ( i = n/4; i < 3 * n/4; i++) 
+        for ( j = n/4; j < 3 * n/4; j++) 
+            magic[i][j] = (n*n + 1) - magic[i][j];
 
     return magic;
-}
+        }
+    
+
+    
 
 // ------------ Construct Magic Square (Singly Even 4k+2) --------------
 vector<vector<int>> singlyEvenMagic(int n) {
@@ -148,6 +206,14 @@ int main() {
         for (auto &x : row)
             cout << x << "\t";
         cout << "\n";
+    }
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            cout<<magic[i][j]<<"  ";
+        }
+        cout<<endl;
     }
 
     // Verify
