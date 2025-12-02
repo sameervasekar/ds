@@ -1,3 +1,11 @@
+//WAP to build a simple stock price tracker that keeps a history of daily stock prices 
+entered by the user. To allow users to go back and view or remove the most recent price, 
+implement a stack using a linked list to store these integer prices. 
+Implement the following operations: 
+a. record(price) – Add a new stock price (an integer) to the stack. 
+b. remove() – Remove and return the most recent price (top of the stack). 
+c. latest() – Return the most recent stock price without removing it. 
+d. isEmpty() – Check if there are no prices recorded.//
 #include <iostream>
 using namespace std;
 
