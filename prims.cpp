@@ -61,14 +61,7 @@ void PrimsAlgo(vector<vector<pair<int, int>>> &graph, int n)
 int main()
 {
 
-    // adj[0] = {1, 2, 3};
-    // adj[1] = {0, 2};
-    // adj[2] = {0, 1, 3, 4};
-    // adj[3] = {0, 2, 4};
-    // adj[4] = {2, 3, 5, 6};
-    // adj[5] = {4};
-    // adj[6] = {4};
-
+    
     int vertices, edges;
     cout << "Enter number of vertices : ";
     cin >> vertices;
@@ -77,7 +70,7 @@ int main()
     cin >> edges;
 
     vector<vector<pair<int, int>>> adj(vertices);
-    cout << "Enter edges between U and V : ";
+    cout << "Enter edges in format (u v w) where u and v are vertices and w is weight:\n";
     for (int i = 0; i < edges; i++)
     {
         int u, v, w;
@@ -86,9 +79,9 @@ int main()
         adj[v].push_back({u, w});
     }
 
-    int start;
-    cout << "Enter start Node : ";
-    cin >> start;
+    PrimsAlgo(adj, vertices);
 
     return 0;
 }
+
+
