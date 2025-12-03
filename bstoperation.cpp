@@ -3,54 +3,43 @@
 #include <iostream>
 #include <queue>
 using namespace std;
-class Node
-{
+
+class Node {
 public:
     int data;
-    Node *right;
-    Node *left;
+    Node* left;
+    Node* right;
 
-    Node(int data)
-    {
+    Node(int data) {
         this->data = data;
-        right = nullptr;
         left = nullptr;
+        right = nullptr;
     }
 };
-Node *createNode(int data)
-{
-    Node *new_node = new Node(data);
+
+Node* createNode(int data) {
+    return new Node(data);
 }
-void Level_order(Node *root)
-{
+
+Node* Insert(Node* root, int key) {
     if (root == nullptr)
-        return;
+        return createNode(key);
 
-    queue<Node *> q;
-    q.push(root);
+    if (key < root->data)
+        root->left = Insert(root->left, key);
+    else if (key > root->data)
+        root->right = Insert(root->right, key);
 
-    while (!q.empty())
-    {
-
-        Node *curr = q.front();
-        q.pop();
-
-        cout << curr->data << " ";
-        if (curr->left)
-            q.push(curr->left);
-        if (curr->right)
-            q.push(curr->right);
-    }
+    return root;
 }
-Node *findMin(Node *root)
-{
+
+Node* findMin(Node* root) {
     while (root && root->left != nullptr)
         root = root->left;
     return root;
 }
 
-Node *Delete(Node *root, int key)
-{
+Node* Delete(Node* root, int key) {
     if (root == nullptr)
         return root;
 
@@ -58,56 +47,68 @@ Node *Delete(Node *root, int key)
         root->left = Delete(root->left, key);
     else if (key > root->data)
         root->right = Delete(root->right, key);
-
-    else
-    {
-        if (root->left == nullptr && root->right == nullptr)
-        {
+    else {
+        if (root->left == nullptr && root->right == nullptr) {
             delete root;
             return nullptr;
-        }
-
-        else if (root->left == nullptr)
-        {
-            Node *temp = root->right;
+        } else if (root->left == nullptr) {
+            Node* temp = root->right;
             delete root;
             return temp;
-        }
-        else if (root->right == nullptr)
-        {
-            Node *temp = root->left;
+        } else if (root->right == nullptr) {
+            Node* temp = root->left;
             delete root;
             return temp;
+        } else {
+            Node* temp = findMin(root->right);
+            root->data = temp->data;
+            root->right = Delete(root->right, temp->data);
         }
-
-        Node *temp = findMin(root->right);
-        root->data = temp->data;
-        root->right = Delete(root->right, temp->data);
     }
     return root;
 }
 
-int main()
-{
+void Level_order(Node* root) {
+    if (!root) return;
 
-    // level 1
-    Node *root = createNode(10);
+    queue<Node*> q;
+    q.push(root);
 
-    // level 2
-    root->left = createNode(5);
-    root->right = createNode(20);
+    while (!q.empty()) {
+        int n = q.size();
+        for (int i = 0; i < n; i++) {
+            Node* curr = q.front();
+            q.pop();
+            cout << curr->data << " ";
+            if (curr->left) q.push(curr->left);
+            if (curr->right) q.push(curr->right);
+        }
+        cout << endl;
+    }
+}
 
-    // level 3
-    root->left->left = createNode(4);
-    root->left->right = createNode(7);
-    root->right->left = createNode(15);
-    root->right->right = createNode(30);
+int main() {
+    Node* root = nullptr;
 
+    root = Insert(root, 10);
+    root = Insert(root, 5);
+    root = Insert(root, 20);
+    root = Insert(root, 4);
+    root = Insert(root, 7);
+    root = Insert(root, 15);
+    root = Insert(root, 30);
+
+    cout << "Level-wise display of BST:" << endl;
     Level_order(root);
 
     root = Delete(root, 20);
-    cout << "\nAfter deleting 20: ";
+    cout << "\nAfter deleting 20:" << endl;
+    Level_order(root);
+
+    root = Insert(root, 25);
+    cout << "\nAfter inserting 25:" << endl;
     Level_order(root);
 
     return 0;
 }
+
